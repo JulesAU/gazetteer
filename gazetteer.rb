@@ -123,6 +123,7 @@ class Gazetteer < Thor
 
     def database
       settings = YAML.load(File.read(File.expand_path("~/.postgres")))[options[:connection]]
+
       @db ||= Sequel.connect(adapter: "postgres",
                           host: settings["host"],
                           database: options[:database],
@@ -150,7 +151,7 @@ class Gazetteer < Thor
         fclass char(1),
         fcode varchar(10),
         country varchar(2),
-        cc2 varchar(60),
+        cc2 varchar(200),
         admin1 varchar(20),
         admin2 varchar(80),
         admin3 varchar(20),
@@ -178,26 +179,26 @@ class Gazetteer < Thor
         ADD CONSTRAINT pk_alternatenameid PRIMARY KEY (alternatenameid);
 
       create table admin1codes (
-        code varchar(10),
-        countrycode char(2),
-        admin1_code varchar(10),
+        code varchar(11),
+        --countrycode char(2),
+        --admin1_code varchar(10),
         name varchar(200),
         alt_name_english varchar(200),
         geonameid int
       );
       ALTER TABLE ONLY admin1codes
-        ADD CONSTRAINT pk_admin1id PRIMARY KEY (geonameid);
+        ADD CONSTRAINT pk_admin1id PRIMARY KEY (code);
 
       create table admin2codes (
         code varchar(50),
-        countrycode char(2),
-        admin1_code varchar(10),
+        --countrycode char(2),
+        --admin1_code varchar(10),
         name varchar(200),
         alt_name_english varchar(200),
         geonameid int
       );
       ALTER TABLE ONLY admin2codes
-        ADD CONSTRAINT pk_admin2id PRIMARY KEY (geonameid);
+        ADD CONSTRAINT pk_admin2id PRIMARY KEY (code);
 
       create table countryinfo (
         iso_alpha2 char(2),
@@ -252,19 +253,19 @@ class Gazetteer < Thor
     end
 
     def populate_admin1
-      CSV.foreach(File.join(METADATA_PATH, "admin1codes.txt"), { col_sep: "\t" }) do |row|
+      CSV.foreach(File.join(DATA_PATH, "admin1CodesASCII.txt"), { col_sep: "\t" }) do |row|
         database[:admin1codes].insert(row)
       end
     end
 
     def populate_admin2
-      CSV.foreach(File.join(METADATA_PATH, "admin2codes.txt"), { col_sep: "\t" }) do |row|
+      CSV.foreach(File.join(DATA_PATH, "admin2codes.txt"), { col_sep: "\t", quote_char: '☁'  }) do |row|
         database[:admin2codes].insert(row)
       end
     end
 
     def populate_countryinfo
-      CSV.foreach(File.join(METADATA_PATH, "countryinfo.txt"), { col_sep: "\t" }) do |row|
+      CSV.foreach(File.join(DATA_PATH, "countryInfo.txt"), { col_sep: "\t" }) do |row|
         database[:countryinfo].insert(row)
       end
     end
@@ -283,7 +284,8 @@ class Gazetteer < Thor
 
     def populate_geonames(file)
       progress = ProgressBar.new(count_rows(file))
-      CSV.foreach(file, { col_sep: "\t" }) do |row|
+      CSV.foreach(file, { col_sep: "\t", quote_char: '☁' }) do |row|
+        # puts row.inspect
         database[:geoname].insert(row)
         progress.increment!
       end
@@ -291,13 +293,14 @@ class Gazetteer < Thor
 
     def populate_alternate_names
       progress = ProgressBar.new(8028082)
-      CSV.foreach(File.join(DATA_PATH, "alternateNames.txt"), { col_sep: "\t" }) do |row|
+      CSV.foreach(File.join(DATA_PATH, "alternateNames.txt"), { col_sep: "\t", quote_char: '☁' }) do |row|
         database[:alternatename].insert(row)
         progress.increment!
       end
     end
 
     def create_geom
+      # Alter table geoname drop column geometry;
       database.run "SELECT AddGeometryColumn ('public','geoname','geometry',4326,'POINT',2);"
       puts "Geometry columns added."
       database.run "UPDATE geoname SET geometry = ST_PointFromText('POINT(' || longitude || ' ' || latitude || ')', 4326);"

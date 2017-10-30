@@ -21,13 +21,27 @@ install:
 data: \
 	data/allcountries.txt \
 	data/alternatenames.txt \
-	cities
+	cities \
+	meta
 
 # Download cities only
 cities: \
 	data/cities15000.txt \
 	data/cities5000.txt \
 	data/cities1000.txt
+
+meta: \
+	data/admin1CodesASCII.txt \
+	data/admin2Codes.txt
+
+data/admin1CodesASCII.txt:
+	curl -s -o data/admin1CodesASCII.txt http://download.geonames.org/export/dump/admin1CodesASCII.txt
+
+data/admin2Codes.txt:
+	curl -s -o data/admin2Codes.txt http://download.geonames.org/export/dump/admin2Codes.txt
+
+data/countryInfo.txt:
+	curl -s http://download.geonames.org/export/dump/countryInfo.txt | grep "^[^#]" > data/countryInfo.txt
 
 # Zips
 data/allcountries.zip:
