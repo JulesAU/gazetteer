@@ -60,6 +60,20 @@ Albania: AL
 Svalbard and Jan Mayen: SJ
 ```
 
+## Our usage
+```
+	sudo gem install bundler
+	bundle install
+	make data
+	./gazetteer.rb setup -d geonames
+	./gazetteer.rb metadata -d geonames
+	./gazetteer.rb import  -d geonames -f data/cities1000.txt 
+	./gazetteer.rb postprocess -d geonames
+
+	# Optionally
+	./gazetteer.rb altnames  -d geonames 
+```
+
 ## Other Resources
 
 * [Data sources](http://www.geonames.org/data-sources.html)
