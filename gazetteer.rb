@@ -285,8 +285,9 @@ class Gazetteer < Thor
     def populate_geonames(file)
       progress = ProgressBar.new(count_rows(file))
       CSV.foreach(file, { col_sep: "\t", quote_char: '☁' }) do |row|
-        # puts row.inspect
-        database[:geoname].insert(row)
+        if row[6]  == "P"
+          database[:geoname].insert(row)
+        end
         progress.increment!
       end
     end

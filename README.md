@@ -67,7 +67,7 @@ Svalbard and Jan Mayen: SJ
 	make data
 	./gazetteer.rb setup -d geonames
 	./gazetteer.rb metadata -d geonames
-	./gazetteer.rb import  -d geonames -f data/cities1000.txt 
+	./gazetteer.rb import  -d geonames -f data/allCountries.txt 
 	./gazetteer.rb postprocess -d geonames
 
 	# Optionally
