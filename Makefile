@@ -21,6 +21,7 @@ install:
 data: \
 	data/allcountries.txt \
 	data/alternatenames.txt \
+	data/countryInfo.txt \
 	cities \
 	meta
 
@@ -33,6 +34,7 @@ cities: \
 meta: \
 	data/admin1CodesASCII.txt \
 	data/admin2Codes.txt
+
 
 data/admin1CodesASCII.txt:
 	curl -s -o data/admin1CodesASCII.txt http://download.geonames.org/export/dump/admin1CodesASCII.txt

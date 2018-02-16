@@ -62,16 +62,20 @@ Svalbard and Jan Mayen: SJ
 
 ## Our usage
 ```
+
 	sudo gem install bundler
 	bundle install
+	mkdir data
 	make data
+	export LANG=C.UTF-8
 	./gazetteer.rb setup -d geonames
-	./gazetteer.rb metadata -d geonames
-	./gazetteer.rb import  -d geonames -f data/allCountries.txt 
-	./gazetteer.rb postprocess -d geonames
+	./gazetteer.rb metadata -d geonames -c default
+
+	./gazetteer.rb import  -d geonames -f data/allCountries.txt -c default
+	./gazetteer.rb postprocess -d geonames -c default
 
 	# Optionally
-	./gazetteer.rb altnames  -d geonames 
+	./gazetteer.rb altnames  -d geonames -c default
 ```
 
 ## Other Resources

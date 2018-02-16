@@ -259,7 +259,7 @@ class Gazetteer < Thor
     end
 
     def populate_admin2
-      CSV.foreach(File.join(DATA_PATH, "admin2codes.txt"), { col_sep: "\t", quote_char: '☁'  }) do |row|
+      CSV.foreach(File.join(DATA_PATH, "admin2Codes.txt"), { col_sep: "\t", quote_char: '☁'  }) do |row|
         database[:admin2codes].insert(row)
       end
     end
