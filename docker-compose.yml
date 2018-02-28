@@ -1,0 +1,54 @@
+version: "3"
+services:
+
+  postgres:
+    image: "mdillon/postgis:9.6"
+    volumes:
+     - /var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=geonames
+    ports:
+      - "127.0.0.1:5432:5432"
+    networks:
+      - webnet3
+
+
+  ubuntu:
+    image: "ubuntu"
+    volumes:
+     - /workspace
+    ports:
+      - "127.0.0.1:7001:22"
+    networks:
+      - webnet3
+
+
+
+networks:
+  webnet3:
+
+ docker run -d \
+  -e "POSTGRES_PASSWORD=password" \
+  -e "POSTGRES_USER=geonames" \
+  --mount source=pq-geo-vol3,destination=/var/lib/postgresql/data \
+  --network "core_webnet3" \
+  "mdillon/postgis:9.6"
+
+
+ docker run --network "core_webnet3" -it ubuntu bash 
+
+# SPin it up!
+docker run -d \
+  -e "POSTGRES_PASSWORD=password" \
+  -e "POSTGRES_USER=geonames" \
+  --network "mw_webnet" \
+  --name "geonames" \
+ motowhere/pg_geonames
+
+      
+# TODO: need to give names so client can find postgres
+
+# DOCKERFILE
+FROM mdillon/postgis:9.6
+COPY _data /var/lib/postgresql/data

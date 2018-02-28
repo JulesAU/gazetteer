@@ -319,3 +319,4 @@ class Gazetteer < Thor
 end
 
 Gazetteer.start
+# FIXME move name index creation to post process
